@@ -106,6 +106,21 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  */
 - (BOOL)lineChartView:(JBLineChartView *)lineChartView shouldHideDotViewOnSelectionAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 
+// Added
+
+/**
+ *  Returns whether we should ignore certain points in the chart
+ *
+ *  Default: NO
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
+ *
+ *  @return Whether or not a line should show a dot for each chart point.
+ */
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView ignorePointForLine:(NSUInteger)lineIndex atHorizontalIndex:(NSUInteger)horizontalIndex;
+
 @end
 
 @protocol JBLineChartViewDelegate <JBChartViewDelegate>
