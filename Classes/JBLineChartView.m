@@ -891,6 +891,26 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     return [self horizontalIndexForPoint:point indexClamp:JBLineChartHorizontalIndexClampNone];
 }
 
+// Added
+- (NSInteger)horizontalRealIndexForLineIndex:(NSUInteger)lineIndex andHorizontalIndex:(NSUInteger)horizontalIndex
+{
+    
+    return horizontalIndex;
+    
+    
+//    if ([self.dataSource respondsToSelector:@selector(lineChartView:ignorePointForLine:atHorizontalIndex:)]) {
+//        NSInteger index = horizontalIndex;
+//        for (int i = 0 ; i < horizontalIndex ; i++) {
+//            if ([self.dataSource lineChartView:self ignorePointForLine:lineIndex atHorizontalIndex:i])
+//                index--;
+//        }
+//        
+//        return index;
+//    }
+//    else return horizontalIndex;
+}
+
+
 - (NSInteger)lineIndexForPoint:(CGPoint)point
 {
     // Find the horizontal indexes
@@ -914,11 +934,13 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             NSArray *lineData = [self.chartData objectAtIndex:lineIndex];
 
             // Left point
-            JBLineChartPoint *leftLineChartPoint = [lineData objectAtIndex:leftHorizontalIndex];
+            NSInteger realLeftIndex = [self horizontalRealIndexForLineIndex:lineIndex andHorizontalIndex:leftHorizontalIndex];
+            JBLineChartPoint *leftLineChartPoint = [lineData objectAtIndex:realLeftIndex];
             CGPoint leftPoint = CGPointMake(leftLineChartPoint.position.x, fmin(fmax(chartPadding, self.linesView.bounds.size.height - leftLineChartPoint.position.y), self.linesView.bounds.size.height - chartPadding));
             
             // Right point
-            JBLineChartPoint *rightLineChartPoint = [lineData objectAtIndex:rightHorizontalIndex];
+            NSInteger realRightIndex = [self horizontalRealIndexForLineIndex:lineIndex andHorizontalIndex:rightHorizontalIndex];
+            JBLineChartPoint *rightLineChartPoint = [lineData objectAtIndex:realRightIndex];
             CGPoint rightPoint = CGPointMake(rightLineChartPoint.position.x, fmin(fmax(chartPadding, self.linesView.bounds.size.height - rightLineChartPoint.position.y), self.linesView.bounds.size.height - chartPadding));
             
             // Touch point
@@ -951,8 +973,10 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:[self padding]];
     
-    NSUInteger lineIndex = self.linesView.selectedLineIndex != kJBLineChartLinesViewUnselectedLineIndex ? self.linesView.selectedLineIndex : [self lineIndexForPoint:touchPoint];
+    //NSUInteger lineIndex = self.linesView.selectedLineIndex != kJBLineChartLinesViewUnselectedLineIndex ? self.linesView.selectedLineIndex : [self lineIndexForPoint:touchPoint];
 
+    NSUInteger lineIndex = 0;
+    
     if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectLineAtIndex:horizontalIndex:touchPoint:)])
     {
         NSUInteger horizontalIndex = [self horizontalIndexForPoint:touchPoint indexClamp:JBLineChartHorizontalIndexClampNone lineData:[self.chartData objectAtIndex:lineIndex]];
@@ -1045,8 +1069,10 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:[self padding]];
     if (self.showsLineSelection)
     {
-        [self.linesView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
-        [self.dotsView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
+        NSInteger lineIndex = 0;
+        //[self lineIndexForPoint:touchPoint];
+        [self.linesView setSelectedLineIndex:lineIndex animated:YES];
+        [self.dotsView setSelectedLineIndex:lineIndex animated:YES];
     }
     [self touchesBeganOrMovedWithTouches:touches];
 }
